@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 import datetime
 from flask import Flask, request, jsonify, make_response, render_template, session
 from flask_cors import CORS, cross_origin
@@ -306,7 +306,7 @@ def adduser():
                 return jsonify(output), 401
 
             else:
-                fecha_hoy = datetime.today().strftime('%Y-%m-%d %H:%M')
+                fecha_hoy = datetime.datetime.today()
                 print('Se hace insert a la tabla usuario para crear el usuario')
                 cur = con.cursor()
                 query = f"insert into usuario values (default, '{nombres}', '{apellidos}', '{email}'," \
