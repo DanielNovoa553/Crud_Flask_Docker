@@ -306,7 +306,7 @@ def adduser():
                 return jsonify(output), 401
 
             else:
-                fecha_hoy = datetime.datetime.today()
+                fecha_hoy = datetime.datetime.today().strftime('%Y-%m-%d %H:%M')
                 print('Se hace insert a la tabla usuario para crear el usuario')
                 cur = con.cursor()
                 query = f"insert into usuario values (default, '{nombres}', '{apellidos}', '{email}'," \
@@ -361,7 +361,7 @@ def getusuerinfo(idusuario):
             tipo = usuario[5]
             telefono = usuario[6]
             descripcion = usuario[7]
-            creacion = usuario[9]
+            creacion = usuario[9].strftime('%d-%m-%Y %H:%M')
 
         else:
             print(' Error no se encontro la informacion del usuario')
