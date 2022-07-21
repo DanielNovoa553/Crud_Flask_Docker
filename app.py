@@ -388,3 +388,77 @@ def getusuerinfo(idusuario):
     con.close()
     print('Ejecucion correcta')
     return jsonify(output), 200
+
+'#----------------------------------------Obtener todos los usuarios-----------------------------------------------'
+
+
+@app.route("/login/getusers", methods=['GET'])
+@token_user
+@cross_origin(supports_credentials=True)
+def getusers():
+
+    print('getusers')
+    output = {'response': False}
+    usuariosarray = []
+
+    con = connectdb()
+    if con == False:
+        output['message'] = 'No se puede conectar a la BD'
+        return jsonify(output), 401
+
+    cur = con.cursor()
+
+    try:
+
+        print('Se realiza consulta a la base para buscar los usuarios creados')
+        query = f"select * from usuario where eliminado = false order by fecha_creacion DESC"
+        print(query)
+        cur.execute(query)
+        usuarios = cur.fetchall()
+        print(usuarios)
+
+        if usuarios is None or usuarios == []:
+            print('No se encontraron usuarios')
+
+        for i in usuarios:
+
+            id = i[0]
+            nombres = i[1]
+            apellidos = i[2]
+            email = i[3]
+            tipo = i[5]
+            telefono = i[6]
+            descripcion = i[7]
+            fechacreacion = i[9].strftime('%Y-%m-%d %H:%M')
+
+            iObj = {
+
+                'id': id,
+                'nombres': nombres,
+                'apellidos': apellidos,
+                'email': email,
+                'tipo': tipo,
+                'telefono': telefono,
+                'descripcion': descripcion,
+                'fechacreacion': fechacreacion,
+
+            }
+            usuariosarray.append(iObj)
+        else:
+            print('Se obtuvieron los usuarios registrados')
+
+        output['Usuarios'] = usuariosarray
+
+    except Exception as e:
+        print(e)
+        print('Ocurrio un error al obtener los usuarios')
+        output['message'] = 'Ocurrio un error al obtener los usuarios '
+        return jsonify(output), 500
+
+    output['message'] = 'Se obtuvieron correctamente los usuarios registrados '
+    output['response'] = True
+    con.commit()
+    cur.close()
+    con.close()
+    print('Ejecucion correcta')
+    return jsonify(output), 200
