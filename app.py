@@ -307,7 +307,7 @@ def adduser():
 
             else:
                 fecha_hoy = datetime.today().strftime('%Y-%m-%d %H:%M')
-                print('Se hace el insert a la tabla usuario para crear el usuario')
+                print('Se hace insert a la tabla usuario para crear el usuario')
                 cur = con.cursor()
                 query = f"insert into usuario values (default, '{nombres}', '{apellidos}', '{email}'," \
                         f"'{md5_hash}', '{tipo}', '{telefono}', '{descripcion}', false, '{fecha_hoy}')"
