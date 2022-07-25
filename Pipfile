@@ -11,6 +11,11 @@ flask-jwt = "*"
 flask-cors = "*"
 tz = "*"
 python-dateutil = "*"
+docker = "*"
+docker-compose = "*"
+psycopg2-binary = "*"
+cffi = "*"
+kubernetes = "*"
 
 [dev-packages]
 

@@ -389,6 +389,7 @@ def getusuerinfo(idusuario):
     print('Ejecucion correcta')
     return jsonify(output), 200
 
+
 '#----------------------------------------Obtener todos los usuarios-----------------------------------------------'
 
 
@@ -462,3 +463,262 @@ def getusers():
     con.close()
     print('Ejecucion correcta')
     return jsonify(output), 200
+
+
+'#---------------------------------------------Update usuario-------------------------------------------------------'
+
+
+@app.route("/login/edituser", methods=['POST'])
+@token_user
+@cross_origin(supports_credentials=True)
+def edituser():
+
+    print('edituser')
+    output = {'response': False}
+    con = connectdb()
+
+    if con == False:
+        output['message'] = 'No se puede conectar a la BD'
+        return jsonify(output), 401
+
+    cur = con.cursor()
+    inputIn = request.get_json(silent=True)
+
+    print('Se valida JSON de entrada')
+    if inputIn is not None:
+        print('Hay un JSON de entrada')
+
+        # id usuario
+        id = getInput(validateJson(inputIn, 'id'))
+        if id == False:
+            output['id'] = 'No se proporciono el campo o esta vacio'
+            return jsonify(output), 400
+
+        # nombres
+        nombres = getInput(validateJson(inputIn, 'nombres'))
+        if nombres == False:
+            output['nombres'] = 'No se proporciono el campo o esta vacio'
+            return jsonify(output), 400
+
+        # apellidos
+        apellidos = getInput(validateJson(inputIn, 'apellidos'))
+        if apellidos == False:
+            output['fechaestudios'] = 'No se proporciono el campo o esta vacio'
+            return jsonify(output), 400
+
+        # Email
+        email= validateJson(inputIn, 'email')
+        if email == False:
+            output['email'] = 'No se proporciono el array o esta vacio'
+            return jsonify(output), 400
+
+        # Tipo
+        tipo = validateJson(inputIn, 'tipo')
+        if tipo == False:
+            output['tipo'] = 'No se proporciono el array o esta vacio'
+            return jsonify(output), 400
+
+        # Telefono
+        telefono = validateJson(inputIn, 'telefono')
+        if telefono == False:
+            output['telefono'] = 'No se proporciono el array o esta vacio'
+            return jsonify(output), 400
+
+        # Descripcion
+        descripcion = validateJson(inputIn, 'descripcion')
+        if descripcion == False:
+            output['descripcion'] = 'No se proporciono el array o esta vacio'
+            return jsonify(output), 400
+
+    else:
+        print('No se proporciono JSON')
+        output['body'] = 'No se proporciono body'
+        return jsonify(output), 400
+
+    try:
+
+        query = f"select * from usuario where id = {id}"
+        print(query)
+        cur.execute(query)
+        usuario = cur.fetchone()
+        print(usuario)
+
+        if usuario is None:
+            print('El id de usuario no existe en la base de datos')
+            con.commit()
+            cur.close()
+            con.close()
+            output['message'] = 'El id de usuario no existe en la base de datos'
+            return jsonify(output), 202
+
+        else:
+
+            try:
+
+                print('Se hace update a la tabla usuario')
+                query = f"update usuario set nombres = '{nombres}', apellidos = '{apellidos}', email = '{email}', " \
+                        f"tipo = '{tipo}', telefono = '{telefono}', descripcion = '{descripcion}' where " \
+                        f"id = {id}"
+                print(query)
+                cur.execute(query)
+
+            except Exception as e:
+                print(e)
+                print('Ocurrio un error al realizar el update del usuario')
+                output['message'] = 'Ocurrio un error al realizar el update del usuario'
+                return jsonify(output), 500
+
+    except Exception as e:
+        print(e)
+        print('Ocurrio un error al validar el id del usuario')
+        output['message'] = 'Ocurrio un error al validar el id del usuario'
+        return jsonify(output), 500
+
+    output['message'] = 'Se actualizaron correctamente los datos del usuario'
+    output['response'] = True
+    con.commit()
+    cur.close()
+    con.close()
+    print('Ejecucion correcta')
+    return jsonify(output), 200
+
+
+'#----------------------------------------------------Borrar usuario logicamente-------------------------------------'
+
+
+@app.route("/login/deluser/<id>", methods=['GET'])
+@token_user
+@cross_origin(supports_credentials=True)
+def deluser(id):
+
+    print('deluser')
+    output = {'response': False}
+    con = connectdb()
+    cur = con.cursor()
+
+    try:
+        print('Se hace select a la tabla estudios para validar  el id de usuario')
+        query = f"select * from usuario where id = {id}"
+        print(query)
+        cur.execute(query)
+        usuario = cur.fetchone()
+        print(usuario)
+
+        if usuario is None:
+            print('El id de usuario no existe en la base de datos')
+            con.commit()
+            cur.close()
+            con.close()
+            output['message'] = 'El id de usuario no existe en la base de datos'
+            return jsonify(output), 202
+
+        else:
+
+            try:
+
+                fecha_hoy = datetime.datetime.today().strftime('%Y-%m-%d %H:%M')
+                print('Se hace update a la tabla usuario')
+                query = f"update usuario set eliminado = true, fecha_eliminacion= '{fecha_hoy}' where id = {id}"
+                print(query)
+                cur.execute(query)
+
+            except Exception as e:
+                print(e)
+                print('Ocurrio un error  al eliminar el usuario')
+                output['message'] = 'Ocurrio un error  al eliminar el usuario'
+                return jsonify(output), 500
+
+    except Exception as e:
+        print(e)
+        print('Error al borrar el usuario  ')
+        output['message'] = 'Error al borrar el usuario'
+        return jsonify(output), 500
+
+    output['message'] = 'Se elimino correctamente el usuario'
+    output['response'] = True
+    con.commit()
+    cur.close()
+    con.close()
+    print('Ejecucion correcta')
+    return jsonify(output), 200
+
+
+'#----------------------------------------Obtener todos los usuarios eliminados------------------------------------'
+
+
+@app.route("/login/getusersdel", methods=['GET'])
+@token_user
+@cross_origin(supports_credentials=True)
+def getusersdel():
+
+    print('getusersdel')
+    output = {'response': False}
+    usuariosarray = []
+
+    con = connectdb()
+    if con == False:
+        output['message'] = 'No se puede conectar a la BD'
+        return jsonify(output), 401
+
+    cur = con.cursor()
+
+    try:
+
+        print('Se realiza consulta a la base para buscar los usuarios creados')
+        query = f"select * from usuario where eliminado = true order by fecha_eliminacion DESC"
+        print(query)
+        cur.execute(query)
+        usuarios = cur.fetchall()
+        print(usuarios)
+
+        if usuarios is None or usuarios == []:
+            print('No se encontraron usuarios')
+
+        for i in usuarios:
+
+            id = i[0]
+            nombres = i[1]
+            apellidos = i[2]
+            email = i[3]
+            tipo = i[5]
+            telefono = i[6]
+            descripcion = i[7]
+            fechacreacion = i[9].strftime('%Y-%m-%d %H:%M')
+            fechaeliminacion = i[10].strftime('%Y-%m-%d %H:%M')
+
+            iObj = {
+
+                'id': id,
+                'nombres': nombres,
+                'apellidos': apellidos,
+                'email': email,
+                'tipo': tipo,
+                'telefono': telefono,
+                'descripcion': descripcion,
+                'fechacreacion': fechacreacion,
+                'fechaeliminacion': fechaeliminacion,
+
+            }
+            usuariosarray.append(iObj)
+        else:
+            print('Se obtuvieron los usuarios eliminados')
+
+        output['Usuarios'] = usuariosarray
+
+    except Exception as e:
+        print(e)
+        print('Ocurrio un error al obtener los usuarios eliminados')
+        output['message'] = 'Ocurrio un error al obtener los usuarios eliminados '
+        return jsonify(output), 500
+
+    output['message'] = 'Se obtuvieron correctamente los usuarios eliminados '
+    output['response'] = True
+    con.commit()
+    cur.close()
+    con.close()
+    print('Ejecucion correcta')
+    return jsonify(output), 200
+
+
+if __name__ == '__main__':
+    app.run(host="0.0.0.0", port=4000, debug=True)
