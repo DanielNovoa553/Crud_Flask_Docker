@@ -352,7 +352,13 @@ def getusuerinfo(idusuario):
         usuario = cur.fetchone()
         print(usuario)
 
-        if usuario is not None:
+        if usuario is None:
+
+            print(' Error no se encontro la informacion del usuario')
+            output['message'] = 'Error no se encontro la informacion del usuario'
+            return jsonify(output), 401
+
+        else:
             print('Se encontro la informacion del usuario')
             id = usuario[0]
             nombres = usuario[1]
@@ -362,10 +368,6 @@ def getusuerinfo(idusuario):
             telefono = usuario[6]
             descripcion = usuario[7]
             creacion = usuario[9].strftime('%d-%m-%Y %H:%M')
-
-        else:
-            print(' Error no se encontro la informacion del usuario')
-            output['message'] = 'Error no se encontro la informacion del usuario'
 
     except Exception as e:
         print(e)
