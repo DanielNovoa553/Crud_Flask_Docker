@@ -17,7 +17,7 @@ CORS(app, support_credentials=True)
 
 def connectdb():
     user = 'postgres'
-    password = 'Jcglobal1#'
+    password = 'postgres'
     dbname = 'plasticos'
     host = '127.0.0.1'
     try:
@@ -306,6 +306,7 @@ def adduser():
                 return jsonify(output), 401
 
             else:
+                print('No se encontro el telefono en la BD, se procede a crear cuenta')
                 fecha_hoy = datetime.datetime.today().strftime('%Y-%m-%d %H:%M')
                 print('Se hace insert a la tabla usuario para crear el usuario')
                 cur = con.cursor()
@@ -389,6 +390,7 @@ def getusuerinfo(idusuario):
     cur.close()
     con.close()
     print('Ejecucion correcta')
+
     return jsonify(output), 200
 
 
