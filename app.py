@@ -425,32 +425,35 @@ def getusers():
         if usuarios is None or usuarios == []:
             print('No se encontraron usuarios')
 
-        for i in usuarios:
-
-            id = i[0]
-            nombres = i[1]
-            apellidos = i[2]
-            email = i[3]
-            tipo = i[5]
-            telefono = i[6]
-            descripcion = i[7]
-            fechacreacion = i[9].strftime('%Y-%m-%d %H:%M')
-
-            iObj = {
-
-                'id': id,
-                'nombres': nombres,
-                'apellidos': apellidos,
-                'email': email,
-                'tipo': tipo,
-                'telefono': telefono,
-                'descripcion': descripcion,
-                'fechacreacion': fechacreacion,
-
-            }
-            usuariosarray.append(iObj)
         else:
-            print('Se obtuvieron los usuarios registrados')
+            print('Se encontraron los usuarios  iterar en ellos')
+
+            for i in usuarios:
+
+                id = i[0]
+                nombres = i[1]
+                apellidos = i[2]
+                email = i[3]
+                tipo = i[5]
+                telefono = i[6]
+                descripcion = i[7]
+                fechacreacion = i[9].strftime('%Y-%m-%d %H:%M')
+
+                iObj = {
+
+                    'id': id,
+                    'nombres': nombres,
+                    'apellidos': apellidos,
+                    'email': email,
+                    'tipo': tipo,
+                    'telefono': telefono,
+                    'descripcion': descripcion,
+                    'fechacreacion': fechacreacion,
+
+                }
+                usuariosarray.append(iObj)
+            else:
+                print('Se obtuvieron los usuarios registrados')
 
         output['Usuarios'] = usuariosarray
 
@@ -678,34 +681,36 @@ def getusersdel():
         if usuarios is None or usuarios == []:
             print('No se encontraron usuarios')
 
-        for i in usuarios:
-
-            id = i[0]
-            nombres = i[1]
-            apellidos = i[2]
-            email = i[3]
-            tipo = i[5]
-            telefono = i[6]
-            descripcion = i[7]
-            fechacreacion = i[9].strftime('%Y-%m-%d %H:%M')
-            fechaeliminacion = i[10].strftime('%Y-%m-%d %H:%M')
-
-            iObj = {
-
-                'id': id,
-                'nombres': nombres,
-                'apellidos': apellidos,
-                'email': email,
-                'tipo': tipo,
-                'telefono': telefono,
-                'descripcion': descripcion,
-                'fechacreacion': fechacreacion,
-                'fechaeliminacion': fechaeliminacion,
-
-            }
-            usuariosarray.append(iObj)
         else:
-            print('Se obtuvieron los usuarios eliminados')
+            print('Se encontraron los usuarios eliminados iterar en ellos')
+            for i in usuarios:
+
+                id = i[0]
+                nombres = i[1]
+                apellidos = i[2]
+                email = i[3]
+                tipo = i[5]
+                telefono = i[6]
+                descripcion = i[7]
+                fechacreacion = i[9].strftime('%Y-%m-%d %H:%M')
+                fechaeliminacion = i[10].strftime('%Y-%m-%d %H:%M')
+
+                iObj = {
+
+                    'id': id,
+                    'nombres': nombres,
+                    'apellidos': apellidos,
+                    'email': email,
+                    'tipo': tipo,
+                    'telefono': telefono,
+                    'descripcion': descripcion,
+                    'fechacreacion': fechacreacion,
+                    'fechaeliminacion': fechaeliminacion,
+
+                }
+                usuariosarray.append(iObj)
+            else:
+                print('Se obtuvieron los usuarios eliminados')
 
         output['Usuarios'] = usuariosarray
 
