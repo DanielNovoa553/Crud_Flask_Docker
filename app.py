@@ -427,9 +427,10 @@ def getusers():
 
         else:
             print('Se encontraron los usuarios  iterar en ellos')
-
+            j = 0
             for i in usuarios:
-
+                j = j+1
+                print('Usuario creado #', str(j)+':', i)
                 id = i[0]
                 nombres = i[1]
                 apellidos = i[2]
@@ -683,8 +684,10 @@ def getusersdel():
 
         else:
             print('Se encontraron los usuarios eliminados iterar en ellos')
+            j = 0
             for i in usuarios:
-
+                j = j+1
+                print('Usuario eliminado #', str(j) + ':', i)
                 id = i[0]
                 nombres = i[1]
                 apellidos = i[2]
